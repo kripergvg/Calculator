@@ -52,14 +52,13 @@ namespace Calculator.Calculator
             for (var i = 1; i < parsedExpression.PartExpressions.Count; i++)
             {
                 var partExpression = parsedExpression.PartExpressions[i];
-                var lastOperator = operators.Peek();
-                if (partExpression.Operator.Priority <= lastOperator.Priority)
+                if (operators.Any() && partExpression.Operator.Priority <= operators.Peek().Priority)
                 {
                     var lastNumber = numbers.Pop();
                     var prevLastNumber = numbers.Pop();
 
                     // удалим оператор, который взяли через Peek()
-                    operators.Pop();
+                    var lastOperator = operators.Pop();
 
                     var valueResult = lastOperator.Execute(prevLastNumber, lastNumber)
                         .OnSuccess(r => partExpression.Operator.Execute(r, partExpression.Number));

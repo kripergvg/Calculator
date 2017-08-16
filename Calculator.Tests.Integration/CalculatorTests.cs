@@ -20,6 +20,7 @@ namespace Calculator.Tests.Integration
             Calculator = container.GetInstance<ICalculator>();
         }
 
+        [TestCase(" 23 * 2 + 45 - 24 / 5", 86.2)]
         [TestCase("3+1", 4)]
         [TestCase("3+1   ", 4)]
         [TestCase("    3+1", 4)]
