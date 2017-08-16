@@ -1,8 +1,10 @@
-﻿namespace Calculator.Operators
+﻿using CSharpFunctionalExtensions;
+
+namespace Calculator.Operators
 {
     public interface IOperator
     {
-        double Execute(double firstValue, double secondValue);
+        Result<double> Execute(double firstValue, double secondValue);
 
         bool Validate(string operatorValue);
 

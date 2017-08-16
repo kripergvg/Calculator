@@ -1,10 +1,12 @@
-﻿namespace Calculator.Operators
+﻿using CSharpFunctionalExtensions;
+
+namespace Calculator.Operators
 {
-    class SubtractionOperator : IOperator
+    public class SubtractionOperator : IOperator
     {
-        public double Execute(double firstValue, double secondValue)
+        public Result<double> Execute(double firstValue, double secondValue)
         {
-            return firstValue - secondValue;
+            return Result.Ok(firstValue - secondValue);
         }
 
         public bool Validate(string operatorValue)

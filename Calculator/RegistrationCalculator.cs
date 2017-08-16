@@ -1,5 +1,7 @@
-﻿using Calculator.Operators;
-using Calculator.ParsedParts;
+﻿using Calculator.Calculator;
+using Calculator.ExpressionFormatter;
+using Calculator.ExpressionsParser;
+using Calculator.Operators;
 using SimpleInjector;
 
 namespace Calculator
@@ -8,10 +10,10 @@ namespace Calculator
     {
         public static Container RegisterCalculator(this Container container)
         {
-            container.RegisterSingleton<ICalculator, Calculator>();
-            container.RegisterSingleton<IPartExpressionsParser, PartExpressionsParser>();
+            container.RegisterSingleton<ICalculator, Calculator.Calculator>();
+            container.RegisterSingleton<IExpressionsParser, ExpressionsParser.ExpressionsParser>();
             container.RegisterSingleton<IOperatorParser, OperatorParser>();
-            container.RegisterSingleton<IExpressionFormatter, ExpressionFormatter>();
+            container.RegisterSingleton<IExpressionFormatter, ExpressionFormatter.ExpressionFormatter>();
 
             container.RegisterCollection<IOperator>(new[]
             {

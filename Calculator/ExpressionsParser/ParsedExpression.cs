@@ -1,10 +1,10 @@
 ﻿using Calculator.Operators;
 
-namespace Calculator.ParsedParts
+namespace Calculator.ExpressionsParser
 {
-    public class PartExpression
+    public class ParsedExpression
     {
-        public PartExpression(IOperator @operator, double number)
+        public ParsedExpression(IOperator @operator, double number)
         {
             Operator = @operator;
             Number = number;

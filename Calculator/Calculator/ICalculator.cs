@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace Calculator
+namespace Calculator.Calculator
 {
     public interface ICalculator
     {

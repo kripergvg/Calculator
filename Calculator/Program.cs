@@ -1,4 +1,5 @@
 ﻿using System;
+using Calculator.Calculator;
 using CSharpFunctionalExtensions;
 using SimpleInjector;
 

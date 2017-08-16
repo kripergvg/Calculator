@@ -1,18 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Calculator.ExpressionFormatter;
+using Calculator.ExpressionsParser;
 using Calculator.Operators;
-using Calculator.ParsedParts;
 using CSharpFunctionalExtensions;
 
-namespace Calculator
+namespace Calculator.Calculator
 {
     public class Calculator : ICalculator
     {
-        private readonly IPartExpressionsParser _expressionsParser;
+        private readonly IExpressionsParser _expressionsParser;
         private readonly IExpressionFormatter _expressionFormatter;
 
         public Calculator(
-            IPartExpressionsParser expressionsParser,
+            IExpressionsParser expressionsParser,
             IExpressionFormatter expressionFormatter)
         {
             _expressionsParser = expressionsParser;
@@ -34,11 +35,10 @@ namespace Calculator
                 return Result.Fail<double>("There are should be at least one expression");
             }
 
-            var number = Calculate(parsedExpression);
-            return Result.Ok(number);
+            return Calculate(parsedExpression);
         }
 
-        private double Calculate(ParsedPartExpressions parsedExpression)
+        private Result<double> Calculate(ParsedExpressions parsedExpression)
         {
             var operators = new Stack<IOperator>();
             var numbers = new Stack<double>();
@@ -61,10 +61,17 @@ namespace Calculator
                     // удалим оператор, который взяли через Peek()
                     operators.Pop();
 
-                    var value = lastOperator.Execute(prevLastNumber, lastNumber);
-                    value = partExpression.Operator.Execute(value, partExpression.Number);
+                    var valueResult = lastOperator.Execute(prevLastNumber, lastNumber)
+                        .OnSuccess(r => partExpression.Operator.Execute(r, partExpression.Number));
 
-                    numbers.Push(value);
+                    if (valueResult.IsSuccess)
+                    {
+                        numbers.Push(valueResult.Value);
+                    }
+                    else
+                    {
+                        return valueResult;
+                    }
                 }
                 else
                 {
@@ -81,11 +88,16 @@ namespace Calculator
 
                 var @operator = operators.Pop();
 
-                var value = @operator.Execute(prevLastNumber, lastNumber);
-                numbers.Push(value);
+                var result = @operator.Execute(prevLastNumber, lastNumber)
+                      .OnSuccess(r => numbers.Push(r));
+
+                if (result.IsFailure)
+                {
+                    return result;
+                }
             }
 
-            return numbers.Pop();
+            return Result.Ok(numbers.Pop());
         }
     }
 }
