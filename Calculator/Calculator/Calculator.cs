@@ -45,29 +45,21 @@ namespace Calculator.Calculator
 
             numbers.Push(parsedExpression.FirstNumber);
 
-            var firstPartExpression = parsedExpression.PartExpressions.First();
-            numbers.Push(firstPartExpression.Number);
-            operators.Push(firstPartExpression.Operator);
-
-            for (var i = 1; i < parsedExpression.PartExpressions.Count; i++)
+            foreach (var partExpression in parsedExpression.PartExpressions)
             {
-                var partExpression = parsedExpression.PartExpressions[i];
                 if (operators.Any() && partExpression.Operator.Priority <= operators.Peek().Priority)
                 {
                     var lastNumber = numbers.Pop();
                     var prevLastNumber = numbers.Pop();
-
-                    // удалим оператор, который взяли через Peek()
+                    
                     var lastOperator = operators.Pop();
 
+                    var expression = partExpression;
                     var valueResult = lastOperator.Execute(prevLastNumber, lastNumber)
-                        .OnSuccess(r => partExpression.Operator.Execute(r, partExpression.Number));
+                        .OnSuccess(r => expression.Operator.Execute(r, expression.Number))
+                        .OnSuccess(r=> numbers.Push(r));
 
-                    if (valueResult.IsSuccess)
-                    {
-                        numbers.Push(valueResult.Value);
-                    }
-                    else
+                    if (valueResult.IsFailure)
                     {
                         return valueResult;
                     }
